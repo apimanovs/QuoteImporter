@@ -32,7 +32,7 @@ public class QuoteImportService
 
             var item = new QuoteItem
             {
-                RowNumber = row,
+                RowNumber = row - 12,
 
                 MolportId = molportId,
                 ProductId = GetString(worksheet, row, QuoteColumns.ProductId),
@@ -182,11 +182,9 @@ public class QuoteImportService
         var worksheet = workbook.Worksheet("Shipping Limitations");
         var lastRow = worksheet.LastRowUsed().RowNumber();
 
-        const int firstDataRow = 2;
-
-        for (var row = firstDataRow; row <= lastRow; row++)
+        for (var row = QuoteConstants.ShippingLimitationsFirstDataRow; row <= lastRow; row++)
         {
-            var molportId = GetString(worksheet, row, 2);
+            var molportId = GetString(worksheet, row, ShippingLimitationColumns.MolportId);
 
             if (string.IsNullOrWhiteSpace(molportId))
             {
@@ -195,18 +193,18 @@ public class QuoteImportService
 
             var limitation = new ShippingLimitation
             {
-                RowNumber = row,
+                RowNumber = row - 1,
                 MolportId = molportId,
-                Supplier = GetString(worksheet, row, 3),
-                CatalogueNumber = GetString(worksheet, row, 4),
-                CountryOfOrigin = GetString(worksheet, row, 5),
-                Unit = GetString(worksheet, row, 6),
-                UnNumber = GetString(worksheet, row, 7),
-                HazardousClass = GetString(worksheet, row, 8),
-                PackingGroup = GetString(worksheet, row, 9),
-                ShippingLimitations = GetString(worksheet, row, 10),
-                CompoundState = GetString(worksheet, row, 11),
-                Solubility = GetString(worksheet, row, 12)
+                Supplier = GetString(worksheet, row, ShippingLimitationColumns.Supplier),
+                CatalogueNumber = GetString(worksheet, row, ShippingLimitationColumns.CatalogueNumber),
+                CountryOfOrigin = GetString(worksheet, row, ShippingLimitationColumns.CountryOfOrigin),
+                Unit = GetString(worksheet, row, ShippingLimitationColumns.Unit),
+                UnNumber = GetString(worksheet, row, ShippingLimitationColumns.UnNumber),
+                HazardousClass = GetString(worksheet, row, ShippingLimitationColumns.HazardousClass),
+                PackingGroup = GetString(worksheet, row, ShippingLimitationColumns.PackingGroup),
+                ShippingLimitations = GetString(worksheet, row, ShippingLimitationColumns.ShippingLimitations),
+                CompoundState = GetString(worksheet, row, ShippingLimitationColumns.CompoundState),
+                Solubility = GetString(worksheet, row, ShippingLimitationColumns.Solubility)
             };
 
             limitations.Add(limitation);
