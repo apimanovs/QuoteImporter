@@ -14,6 +14,7 @@ public partial class MainWindow : Window
     private readonly QuoteImportService _quoteImportService = new();
 
     private List<QuoteItem> _items = new();
+    private List<ShippingLimitation> _shippingLimitations = new();
     private QuoteSummary _summary = new();
 
     public MainWindow()
@@ -45,8 +46,10 @@ public partial class MainWindow : Window
 
             _items = importResult.Items;
             _summary = importResult.Summary;
+            _shippingLimitations = importResult.ShippingLimitations;
 
             QuoteItemsGrid.ItemsSource = _items;
+            ShippingLimitationsGrid.ItemsSource = _shippingLimitations;
 
             UpdateSummary();
 

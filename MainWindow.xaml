@@ -80,38 +80,67 @@
 			</WrapPanel>
 		</Border>
 
-		<DataGrid x:Name="QuoteItemsGrid"
-                  Grid.Row="3"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  CanUserAddRows="False"
-                  EnableRowVirtualization="True"
-                  EnableColumnVirtualization="True"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="Row" Binding="{Binding RowNumber}" Width="60"/>
-				<DataGridTextColumn Header="Molport ID" Binding="{Binding MolportId}" Width="130"/>
-				<DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" Width="180"/>
-				<DataGridTextColumn Header="Supplier" Binding="{Binding Supplier}" Width="150"/>
-				<DataGridTextColumn Header="Catalogue Number" Binding="{Binding CatalogueNumber}" Width="160"/>
-				<DataGridTextColumn Header="Delivery Time" Binding="{Binding DeliveryTimeBusinessDays}" Width="110"/>
-				<DataGridTextColumn Header="Search Criteria" Binding="{Binding SearchCriteria}" Width="140"/>
-				<DataGridTextColumn Header="Match Type" Binding="{Binding MatchType}" Width="100"/>
-				<DataGridTextColumn Header="SMILES" Binding="{Binding Smiles}" Width="260"/>
-				<DataGridTextColumn Header="Molecular Weight" Binding="{Binding MolecularWeight}" Width="130"/>
-				<DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="80"/>
-				<DataGridTextColumn Header="Unit Price USD" Binding="{Binding UnitPriceUsd}" Width="120"/>
-				<DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="70"/>
-				<DataGridTextColumn Header="Discount USD" Binding="{Binding DiscountUsd}" Width="120"/>
-				<DataGridTextColumn Header="Net Price USD" Binding="{Binding NetPriceUsd}" Width="120"/>
-				<DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="90"/>
-				<DataGridTextColumn Header="IUPAC" Binding="{Binding Iupac}" Width="280"/>
-				<DataGridTextColumn Header="Compliance" Binding="{Binding Compliance}" Width="160"/>
-				<DataGridTextColumn Header="Calculated Total USD" Binding="{Binding CalculatedLineTotalUsd}" Width="150"/>
-				<DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}" Width="70"/>
-				<DataGridTextColumn Header="Errors" Binding="{Binding ErrorMessage}" Width="300"/>
-			</DataGrid.Columns>
-		</DataGrid>
+		<TabControl Grid.Row="3">
+			<TabItem Header="Molecules">
+				<DataGrid x:Name="QuoteItemsGrid"
+						  AutoGenerateColumns="False"
+						  IsReadOnly="True"
+						  CanUserAddRows="False"
+						  EnableRowVirtualization="True"
+						  EnableColumnVirtualization="True"
+						  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Row" Binding="{Binding RowNumber}" Width="60"/>
+						<DataGridTextColumn Header="Molport ID" Binding="{Binding MolportId}" Width="130"/>
+						<DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" Width="180"/>
+						<DataGridTextColumn Header="Supplier" Binding="{Binding Supplier}" Width="150"/>
+						<DataGridTextColumn Header="Catalogue Number" Binding="{Binding CatalogueNumber}" Width="160"/>
+						<DataGridTextColumn Header="Delivery Time" Binding="{Binding DeliveryTimeBusinessDays}" Width="110"/>
+						<DataGridTextColumn Header="Search Criteria" Binding="{Binding SearchCriteria}" Width="140"/>
+						<DataGridTextColumn Header="Match Type" Binding="{Binding MatchType}" Width="100"/>
+						<DataGridTextColumn Header="SMILES" Binding="{Binding Smiles}" Width="260"/>
+						<DataGridTextColumn Header="Molecular Weight" Binding="{Binding MolecularWeight}" Width="130"/>
+						<DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="80"/>
+						<DataGridTextColumn Header="Unit Price USD" Binding="{Binding UnitPriceUsd}" Width="120"/>
+						<DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="70"/>
+						<DataGridTextColumn Header="Discount USD" Binding="{Binding DiscountUsd}" Width="120"/>
+						<DataGridTextColumn Header="Net Price USD" Binding="{Binding NetPriceUsd}" Width="120"/>
+						<DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="90"/>
+						<DataGridTextColumn Header="IUPAC" Binding="{Binding Iupac}" Width="280"/>
+						<DataGridTextColumn Header="Compliance" Binding="{Binding Compliance}" Width="160"/>
+						<DataGridTextColumn Header="Calculated Total USD" Binding="{Binding CalculatedLineTotalUsd}" Width="150"/>
+						<DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}" Width="70"/>
+						<DataGridTextColumn Header="Errors" Binding="{Binding ErrorMessage}" Width="300"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
+
+			<TabItem Header="Shipping Limitations">
+				<DataGrid x:Name="ShippingLimitationsGrid"
+						  AutoGenerateColumns="False"
+						  IsReadOnly="True"
+						  CanUserAddRows="False"
+						  EnableRowVirtualization="True"
+						  EnableColumnVirtualization="True"
+						  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Row" Binding="{Binding RowNumber}" Width="60"/>
+						<DataGridTextColumn Header="Molport ID" Binding="{Binding MolportId}" Width="130"/>
+						<DataGridTextColumn Header="Supplier" Binding="{Binding Supplier}" Width="150"/>
+						<DataGridTextColumn Header="Catalogue Number" Binding="{Binding CatalogueNumber}" Width="160"/>
+						<DataGridTextColumn Header="Country Of Origin" Binding="{Binding CountryOfOrigin}" Width="150"/>
+						<DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="80"/>
+						<DataGridTextColumn Header="UN Number" Binding="{Binding UnNumber}" Width="100"/>
+						<DataGridTextColumn Header="Hazardous Class" Binding="{Binding HazardousClass}" Width="130"/>
+						<DataGridTextColumn Header="Packing Group" Binding="{Binding PackingGroup}" Width="120"/>
+						<DataGridTextColumn Header="Shipping Limitations" Binding="{Binding ShippingLimitations}" Width="220"/>
+						<DataGridTextColumn Header="Compound State" Binding="{Binding CompoundState}" Width="130"/>
+						<DataGridTextColumn Header="Solubility" Binding="{Binding Solubility}" Width="130"/>
+					</DataGrid.Columns>
+				</DataGrid>
+			</TabItem>
+		</TabControl>
 	</Grid>
 </Window>

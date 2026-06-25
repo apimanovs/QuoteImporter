@@ -71,6 +71,7 @@ public class QuoteImportService
         }
 
         result.Summary = ParseSummary(worksheet, lastRow);
+        result.ShippingLimitations = ParseShippingLimitations(workbook);
 
         return result;
     }
@@ -172,5 +173,45 @@ public class QuoteImportService
         }
 
         return null;
+    }
+
+    private static List<ShippingLimitation> ParseShippingLimitations(XLWorkbook workbook)
+    {
+        var limitations = new List<ShippingLimitation>();
+
+        var worksheet = workbook.Worksheet("Shipping Limitations");
+        var lastRow = worksheet.LastRowUsed().RowNumber();
+
+        const int firstDataRow = 2;
+
+        for (var row = firstDataRow; row <= lastRow; row++)
+        {
+            var molportId = GetString(worksheet, row, 2);
+
+            if (string.IsNullOrWhiteSpace(molportId))
+            {
+                continue;
+            }
+
+            var limitation = new ShippingLimitation
+            {
+                RowNumber = row,
+                MolportId = molportId,
+                Supplier = GetString(worksheet, row, 3),
+                CatalogueNumber = GetString(worksheet, row, 4),
+                CountryOfOrigin = GetString(worksheet, row, 5),
+                Unit = GetString(worksheet, row, 6),
+                UnNumber = GetString(worksheet, row, 7),
+                HazardousClass = GetString(worksheet, row, 8),
+                PackingGroup = GetString(worksheet, row, 9),
+                ShippingLimitations = GetString(worksheet, row, 10),
+                CompoundState = GetString(worksheet, row, 11),
+                Solubility = GetString(worksheet, row, 12)
+            };
+
+            limitations.Add(limitation);
+        }
+
+        return limitations;
     }
 }
