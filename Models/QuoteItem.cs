@@ -31,7 +31,7 @@ public class QuoteItem
 
     public decimal? CalculatedLineTotalUsd =>
         UnitPriceUsd.HasValue && Quantity.HasValue
-            ? UnitPriceUsd.Value * Quantity.Value - (DiscountUsd ?? 0)
+            ? UnitPriceUsd.Value * Quantity.Value + (DiscountUsd ?? 0)
             : null;
 
     public bool IsValid { get; set; } = true;

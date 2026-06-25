@@ -1,8 +1,10 @@
 using ClosedXML.Excel;
-using MolportQuoteImporter.Models;
 using MolportQuoteImporter.Constants;
+using MolportQuoteImporter.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace MolportQuoteImporter.Services;
 
@@ -10,9 +12,9 @@ public class QuoteImportService
 {
     private readonly QuoteValidationService _validationService = new();
 
-    public List<QuoteItem> Import(string filePath)
+    public QuoteImportResult Import(string filePath)
     {
-        var items = new List<QuoteItem>();
+        var result = new QuoteImportResult();
 
         using var workbook = new XLWorkbook(filePath);
         var worksheet = workbook.Worksheet("Molecules");
@@ -21,10 +23,10 @@ public class QuoteImportService
 
         for (var row = QuoteConstants.FirstDataRow; row <= lastRow; row++)
         {
-            var molportId = GetString(worksheet, row, 2);
+            var molportId = GetString(worksheet, row, QuoteColumns.MolportId);
 
             if (string.IsNullOrWhiteSpace(molportId))
-            { 
+            {
                 continue;
             }
 
@@ -33,34 +35,90 @@ public class QuoteImportService
                 RowNumber = row,
 
                 MolportId = molportId,
-                ProductId = GetString(worksheet, row, 3),
-                Supplier = GetString(worksheet, row, 4),
-                CatalogueNumber = GetString(worksheet, row, 5),
+                ProductId = GetString(worksheet, row, QuoteColumns.ProductId),
+                Supplier = GetString(worksheet, row, QuoteColumns.Supplier),
 
-                DeliveryTimeBusinessDays = GetInt(worksheet, row, 6),
+                CatalogueNumber = GetString(worksheet, row, QuoteColumns.CatalogueNumber),
+                DeliveryTimeBusinessDays =GetInt(worksheet, row, QuoteColumns.DeliveryTimeBusinessDays),
 
-                SearchCriteria = GetString(worksheet, row, 7),
-                MatchType = GetString(worksheet, row, 8),
-                Smiles = GetString(worksheet, row, 9),
+                SearchCriteria = GetString(worksheet, row, QuoteColumns.SearchCriteria),
 
-                MolecularWeight = GetDecimal(worksheet, row, 10),
+                MatchType = GetString(worksheet, row, QuoteColumns.MatchType),
 
-                Unit = GetString(worksheet, row, 11),
-                UnitPriceUsd = GetDecimal(worksheet, row, 12),
-                Quantity = GetString(worksheet, row, 13), // row saved as string
-                DiscountUsd = GetDecimal(worksheet, row, 14),
-                NetPriceUsd = GetDecimal(worksheet, row, 15),
+                Smiles = GetString(worksheet, row, QuoteColumns.Smiles),
 
-                Purity = GetString(worksheet, row, 16),
-                Iupac = GetString(worksheet, row, 17),
-                Compliance = GetString(worksheet, row, 18),
+                MolecularWeight = GetDecimal(worksheet, row, QuoteColumns.MolecularWeight),
+
+                Unit = GetString(worksheet, row, QuoteColumns.Unit),
+
+                UnitPriceUsd = GetDecimal(worksheet, row, QuoteColumns.UnitPriceUsd),
+
+                Quantity = GetInt(worksheet, row, QuoteColumns.Quantity),
+
+                DiscountUsd = GetDecimal(worksheet, row, QuoteColumns.DiscountUsd),
+
+                NetPriceUsd = GetDecimal(worksheet, row, QuoteColumns.NetPriceUsd),
+
+                Purity = GetString(worksheet, row, QuoteColumns.Purity),
+
+                Iupac = GetString(worksheet, row, QuoteColumns.Iupac),
+
+                Compliance = GetString(worksheet, row, QuoteColumns.Compliance),
             };
 
             _validationService.Validate(item);
-            items.Add(item);
+            result.Items.Add(item);
         }
 
-        return items;
+        result.Summary = ParseSummary(worksheet, lastRow);
+
+        return result;
+    }
+
+    private static QuoteSummary ParseSummary(IXLWorksheet worksheet, int lastRow)
+    {
+        var summary = new QuoteSummary();
+
+        for (var row = 1; row <= lastRow; row++)
+        {
+            var label = GetString(worksheet, row, QuoteColumns.SummaryLabelPrimary);
+
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                label = GetString(worksheet, row, QuoteColumns.SummaryLabelSecondary);
+            }
+
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                continue;
+            }
+
+            var value = GetDecimal(worksheet, row, QuoteColumns.NetPriceUsd);
+
+            if (label.Contains("Total Applied Discount Savings", StringComparison.OrdinalIgnoreCase))
+            {
+                summary.TotalAppliedDiscountSavingsUsd = value;
+            }
+            else if (label.Contains("Compounds", StringComparison.OrdinalIgnoreCase))
+            {
+                summary.CompoundsUsd = value;
+            }
+            else if (label.Contains("Tariff Surcharge", StringComparison.OrdinalIgnoreCase))
+            {
+                summary.TariffSurchargeUsd = value;
+            }
+            else if (label.Contains("Consolidated Molport Shipping", StringComparison.OrdinalIgnoreCase)
+                     && !label.Contains("Total order value", StringComparison.OrdinalIgnoreCase))
+            {
+                summary.ConsolidatedMolportShippingUsd = value;
+            }
+            else if (label.Contains("Total order value", StringComparison.OrdinalIgnoreCase))
+            {
+                summary.TotalOrderValueWithShippingUsd = value;
+            }
+        }
+
+        return summary;
     }
 
     private static string GetString(IXLWorksheet worksheet, int row, int column)
@@ -73,14 +131,14 @@ public class QuoteImportService
         var value = GetString(worksheet, row, column);
 
         if (string.IsNullOrWhiteSpace(value))
-        { 
+        {
             return null;
         }
 
         value = value.Replace("+", "").Trim();
 
         if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var result))
-        { 
+        {
             return result;
         }
 
@@ -89,18 +147,28 @@ public class QuoteImportService
 
     private static decimal? GetDecimal(IXLWorksheet worksheet, int row, int column)
     {
-        var value = GetString(worksheet, row, column);
+        var cell = worksheet.Cell(row, column);
 
-        if (string.IsNullOrWhiteSpace(value))
-        { 
+        if (cell.IsEmpty())
+        {
             return null;
         }
 
-        value = value.Replace("$", "").Replace(",", "").Trim();
+        if (cell.TryGetValue<decimal>(out var numericValue))
+        {
+            return numericValue;
+        }
 
-        if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var result))
-        { 
-            return result;
+        var value = cell.GetString().Trim();
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var normalizedResult))
+        {
+            return normalizedResult;
         }
 
         return null;

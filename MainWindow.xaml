@@ -1,12 +1,117 @@
 ﻿<Window x:Class="MolportQuoteImporter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MolportQuoteImporter"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Molport Quote Importer"
+        Height="760"
+        Width="1350"
+        WindowStartupLocation="CenterScreen">
+	<Grid Margin="16">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
 
-    </Grid>
+		<DockPanel Grid.Row="0" Margin="0 0 0 14">
+			<StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+				<Button x:Name="SelectFileButton"
+                        Content="Select Excel File"
+                        Width="150"
+                        Height="34"
+                        Click="SelectFileButton_Click"/>
+
+				<Button x:Name="ImportQuoteButton"
+                        Content="Import Quote"
+                        Width="130"
+                        Height="34"
+                        Margin="8 0 0 0"
+                        IsEnabled="False"
+                        Click="ImportQuoteButton_Click"/>
+			</StackPanel>
+
+			<TextBlock x:Name="StatusTextBlock"
+                       Margin="16 8 0 0"
+                       Text="No file loaded"
+                       Foreground="Gray"/>
+		</DockPanel>
+
+		<Border Grid.Row="1"
+                Padding="12"
+                Margin="0 0 0 12"
+                BorderBrush="#DDD"
+                BorderThickness="1"
+                CornerRadius="6">
+			<WrapPanel>
+				<TextBlock x:Name="TotalRowsTextBlock" Margin="0 0 24 0" Text="Total rows: 0"/>
+				<TextBlock x:Name="ValidRowsTextBlock" Margin="0 0 24 0" Text="Valid rows: 0"/>
+				<TextBlock x:Name="InvalidRowsTextBlock" Margin="0 0 24 0" Text="Invalid rows: 0"/>
+				<TextBlock x:Name="TotalNetPriceTextBlock" Margin="0 0 24 0" Text="Total net price: 0"/>
+			</WrapPanel>
+		</Border>
+
+		<Border Grid.Row="2"
+                Padding="12"
+                Margin="0 0 0 12"
+                BorderBrush="#DDD"
+                BorderThickness="1"
+                CornerRadius="6">
+			<WrapPanel>
+				<TextBlock Text="Quote summary:" FontWeight="SemiBold" Margin="0 0 24 0"/>
+
+				<TextBlock x:Name="DiscountSavingsTextBlock"
+                           Margin="0 0 24 0"
+                           Text="Discount savings: -"/>
+
+				<TextBlock x:Name="CompoundsTextBlock"
+                           Margin="0 0 24 0"
+                           Text="Compounds: -"/>
+
+				<TextBlock x:Name="TariffSurchargeTextBlock"
+                           Margin="0 0 24 0"
+                           Text="Tariff surcharge: -"/>
+
+				<TextBlock x:Name="ShippingTextBlock"
+                           Margin="0 0 24 0"
+                           Text="Shipping: -"/>
+
+				<TextBlock x:Name="TotalOrderValueTextBlock"
+                           Text="Total order value: -"/>
+			</WrapPanel>
+		</Border>
+
+		<DataGrid x:Name="QuoteItemsGrid"
+                  Grid.Row="3"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  EnableRowVirtualization="True"
+                  EnableColumnVirtualization="True"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Row" Binding="{Binding RowNumber}" Width="60"/>
+				<DataGridTextColumn Header="Molport ID" Binding="{Binding MolportId}" Width="130"/>
+				<DataGridTextColumn Header="Product ID" Binding="{Binding ProductId}" Width="180"/>
+				<DataGridTextColumn Header="Supplier" Binding="{Binding Supplier}" Width="150"/>
+				<DataGridTextColumn Header="Catalogue Number" Binding="{Binding CatalogueNumber}" Width="160"/>
+				<DataGridTextColumn Header="Delivery Time" Binding="{Binding DeliveryTimeBusinessDays}" Width="110"/>
+				<DataGridTextColumn Header="Search Criteria" Binding="{Binding SearchCriteria}" Width="140"/>
+				<DataGridTextColumn Header="Match Type" Binding="{Binding MatchType}" Width="100"/>
+				<DataGridTextColumn Header="SMILES" Binding="{Binding Smiles}" Width="260"/>
+				<DataGridTextColumn Header="Molecular Weight" Binding="{Binding MolecularWeight}" Width="130"/>
+				<DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="80"/>
+				<DataGridTextColumn Header="Unit Price USD" Binding="{Binding UnitPriceUsd}" Width="120"/>
+				<DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="70"/>
+				<DataGridTextColumn Header="Discount USD" Binding="{Binding DiscountUsd}" Width="120"/>
+				<DataGridTextColumn Header="Net Price USD" Binding="{Binding NetPriceUsd}" Width="120"/>
+				<DataGridTextColumn Header="Purity" Binding="{Binding Purity}" Width="90"/>
+				<DataGridTextColumn Header="IUPAC" Binding="{Binding Iupac}" Width="280"/>
+				<DataGridTextColumn Header="Compliance" Binding="{Binding Compliance}" Width="160"/>
+				<DataGridTextColumn Header="Calculated Total USD" Binding="{Binding CalculatedLineTotalUsd}" Width="150"/>
+				<DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}" Width="70"/>
+				<DataGridTextColumn Header="Errors" Binding="{Binding ErrorMessage}" Width="300"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </Window>
