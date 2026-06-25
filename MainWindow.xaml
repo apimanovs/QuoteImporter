@@ -37,17 +37,29 @@
 		</DockPanel>
 
 		<Border Grid.Row="1"
-                Padding="12"
-                Margin="0 0 0 12"
-                BorderBrush="#DDD"
-                BorderThickness="1"
-                CornerRadius="6">
-			<WrapPanel>
-				<TextBlock x:Name="TotalRowsTextBlock" Margin="0 0 24 0" Text="Total rows: 0"/>
-				<TextBlock x:Name="ValidRowsTextBlock" Margin="0 0 24 0" Text="Valid rows: 0"/>
-				<TextBlock x:Name="InvalidRowsTextBlock" Margin="0 0 24 0" Text="Invalid rows: 0"/>
-				<TextBlock x:Name="TotalNetPriceTextBlock" Margin="0 0 24 0" Text="Total net price: 0"/>
-			</WrapPanel>
+				Padding="12"
+				Margin="0 0 0 12"
+				BorderBrush="#DDD"
+				BorderThickness="1"
+				CornerRadius="6">
+
+			<StackPanel>
+				<WrapPanel>
+					<TextBlock Text="Molecules summary:" FontWeight="SemiBold" Margin="0 0 24 0"/>
+					<TextBlock x:Name="TotalRowsTextBlock" Margin="0 0 24 0" Text="Total rows: 0"/>
+					<TextBlock x:Name="ValidRowsTextBlock" Margin="0 0 24 0" Text="Valid rows: 0"/>
+					<TextBlock x:Name="InvalidRowsTextBlock" Margin="0 0 24 0" Text="Invalid rows: 0"/>
+					<TextBlock x:Name="TotalNetPriceTextBlock" Margin="0 0 24 0" Text="Total net price: 0"/>
+				</WrapPanel>
+
+				<WrapPanel Margin="0 8 0 0">
+					<TextBlock Text="Shipping limitations:" FontWeight="SemiBold" Margin="0 0 24 0"/>
+					<TextBlock x:Name="TotalLimitationsTextBlock" Margin="0 0 24 0" Text="Total limitations: 0"/>
+					<TextBlock x:Name="ValidLimitationsTextBlock" Margin="0 0 24 0" Text="Valid limitations: 0"/>
+					<TextBlock x:Name="InvalidLimitationsTextBlock" Margin="0 0 24 0" Text="Invalid limitations: 0"/>
+				</WrapPanel>
+			</StackPanel>
+
 		</Border>
 
 		<Border Grid.Row="2"
@@ -57,7 +69,7 @@
                 BorderThickness="1"
                 CornerRadius="6">
 			<WrapPanel>
-				<TextBlock Text="Quote summary:" FontWeight="SemiBold" Margin="0 0 24 0"/>
+				<TextBlock Text="Molecules summary:" FontWeight="SemiBold" Margin="0 0 24 0"/>
 
 				<TextBlock x:Name="DiscountSavingsTextBlock"
                            Margin="0 0 24 0"
@@ -138,6 +150,8 @@
 						<DataGridTextColumn Header="Shipping Limitations" Binding="{Binding ShippingLimitations}" Width="220"/>
 						<DataGridTextColumn Header="Compound State" Binding="{Binding CompoundState}" Width="130"/>
 						<DataGridTextColumn Header="Solubility" Binding="{Binding Solubility}" Width="130"/>
+						<DataGridCheckBoxColumn Header="Valid" Binding="{Binding IsValid}" Width="70"/>
+						<DataGridTextColumn Header="Errors" Binding="{Binding ErrorMessage}" Width="300"/>
 					</DataGrid.Columns>
 				</DataGrid>
 			</TabItem>

@@ -18,4 +18,7 @@ public class ShippingLimitation
     public string ShippingLimitations { get; set; } = "";
     public string CompoundState { get; set; } = "";
     public string Solubility { get; set; } = "";
+
+    public bool IsValid { get; set; } = true;
+    public string ErrorMessage { get; set; } = "";
 }

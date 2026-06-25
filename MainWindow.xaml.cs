@@ -52,6 +52,7 @@ public partial class MainWindow : Window
             ShippingLimitationsGrid.ItemsSource = _shippingLimitations;
 
             UpdateSummary();
+            UpdateShippingLimitationsSummary(importResult);
 
             StatusTextBlock.Text = $"Loaded: {System.IO.Path.GetFileName(filePath)}";
             ImportQuoteButton.IsEnabled = true;
@@ -102,6 +103,18 @@ public partial class MainWindow : Window
         TariffSurchargeTextBlock.Text = $"Tariff surcharge: {FormatUsd(_summary.TariffSurchargeUsd)}";
         ShippingTextBlock.Text = $"Shipping: {FormatUsd(_summary.ConsolidatedMolportShippingUsd)}";
         TotalOrderValueTextBlock.Text = $"Total order value: {FormatUsd(_summary.TotalOrderValueWithShippingUsd)}";
+    }
+
+    private void UpdateShippingLimitationsSummary(QuoteImportResult result)
+    {
+        TotalLimitationsTextBlock.Text =
+            $"Total limitations: {result.ShippingLimitations.Count}";
+
+        ValidLimitationsTextBlock.Text =
+            $"Valid limitations: {result.ShippingLimitations.Count(x => x.IsValid)}";
+
+        InvalidLimitationsTextBlock.Text =
+            $"Invalid limitations: {result.ShippingLimitations.Count(x => !x.IsValid)}";
     }
 
     private static string FormatUsd(decimal? value)

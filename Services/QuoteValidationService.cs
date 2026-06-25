@@ -5,7 +5,7 @@ namespace MolportQuoteImporter.Services;
 
 public class QuoteValidationService
 {
-    public void Validate(QuoteItem item)
+    public void ValidateMolecules(QuoteItem item)
     {
         var errors = new List<string>();
 
@@ -54,6 +54,44 @@ public class QuoteValidationService
             item.NetPriceUsd > item.CalculatedLineTotalUsd)
         {
             errors.Add("Net price exceeds calculated line total");
+        }
+
+        item.IsValid = errors.Count == 0;
+        item.ErrorMessage = string.Join("; ", errors);
+    }
+
+    public void ValidateShippingLimitations(ShippingLimitation item)
+    {
+        var errors = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(item.MolportId))
+        {
+            errors.Add("Molport ID is missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(item.Supplier))
+        {
+            errors.Add("Supplier is missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(item.CatalogueNumber))
+        {
+            errors.Add("Catalogue number is missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(item.CountryOfOrigin))
+        {
+            errors.Add("Country of origin is missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(item.Unit))
+        {
+            errors.Add("Unit is missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(item.ShippingLimitations))
+        {
+            errors.Add("Shipping limitation is missing");
         }
 
         item.IsValid = errors.Count == 0;

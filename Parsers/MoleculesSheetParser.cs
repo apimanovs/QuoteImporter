@@ -48,7 +48,7 @@ public class MoleculesSheetParser
                 Compliance = ExcelCellReader.GetString(worksheet, row, QuoteColumns.Compliance),
             };
 
-            _validationService.Validate(item);
+            _validationService.ValidateMolecules(item);
             items.Add(item);
         }
 
