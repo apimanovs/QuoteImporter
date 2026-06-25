@@ -30,10 +30,10 @@ public class QuoteItem
     public string Compliance { get; set; } = "";
 
     public decimal? CalculatedLineTotalUsd =>
-        UnitPriceUsd.HasValue && Quantity.HasValue && DiscountUsd.HasValue
-            ? UnitPriceUsd.Value * Quantity.Value - DiscountUsd.Value
+        UnitPriceUsd.HasValue && Quantity.HasValue
+            ? UnitPriceUsd.Value * Quantity.Value - (DiscountUsd ?? 0)
             : null;
 
-    public bool IsValid { get; set; }
+    public bool IsValid { get; set; } = true;
     public string ErrorMessage { get; set; } = "";
 }
